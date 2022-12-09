@@ -28,23 +28,30 @@ class ViewController: UIViewController {
     var alertError = UIAlertController()
     var accessAction = UIAlertAction()
     var cancelAction = UIAlertAction()
+    var errorAlertCancelAction: UIAlertAction!
     var errorMessage = ""
     var document = ""
     var documentIsEmpty = false
     var studentDocument = false
     var professorDocument = false
     
-    @IBAction func onAccessButtonTapped() {
-        createAlert()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        createAlerts()
         setupAlertActions()
         addAlertAction(alertToAccess,accessAction)
         addAlertAction(alertToAccess,cancelAction)
+        addAlertAction(alertError, errorAlertCancelAction)
         addTextFieldToAlert()
+    }
+    
+    @IBAction func onAccessButtonTapped() {
         present(alertToAccess, animated: true)
     }
     
-    private func createAlert() {
+    private func createAlerts() {
         alertToAccess = UIAlertController(title: Constant.alertTittle, message: Constant.alertMessage, preferredStyle: .alert)
+        alertError = UIAlertController(title: Constant.errorTittle, message: errorMessage, preferredStyle: .alert)
     }
     
     private func setupAlertActions() {
@@ -54,6 +61,7 @@ class ViewController: UIViewController {
             self.processAccessAction()
         }
         cancelAction = UIAlertAction(title: Constant.alertCancelAction, style: .cancel)
+        errorAlertCancelAction = UIAlertAction(title: Constant.alertCancelAction, style: .cancel)
     }
     
     private func addAlertAction(_ alert: UIAlertController,_ action : UIAlertAction) {
@@ -83,6 +91,7 @@ class ViewController: UIViewController {
         for i in 0..<documentsArray.count {
             if document == documentsArray[i] {
                 documentExist = true
+                break
             }
         }
         return documentExist
@@ -107,8 +116,7 @@ class ViewController: UIViewController {
     }
     
     private func presentErrorAlert() {
-        alertError = UIAlertController(title: Constant.errorTittle, message: errorMessage, preferredStyle: .alert)
-        addAlertAction(alertError, cancelAction)
+        alertError.message = errorMessage
         present(alertError, animated: true)
     }
 }
